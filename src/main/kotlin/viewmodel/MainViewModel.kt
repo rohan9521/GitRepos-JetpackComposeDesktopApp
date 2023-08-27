@@ -18,9 +18,9 @@ class MainViewModel (
 
     val repoFlow : StateFlow<List<Repository>> = repository.repoFlow
 
-    fun getAllRepos(){
+    fun getAllRepos(searchRepoName:String){
         scope.launch {
-            repository.getAllRepos()
+            repository.getAllRepos(searchRepoName)
         }
     }
 

@@ -3,21 +3,21 @@ package GraphQL
 import com.apollographql.apollo3.ApolloClient
 import model.*
 import repository.FetchService
+import src.main.GetRepositoryQuery
 import src.main.SearchQuery
 import java.util.stream.Collector
 
 class ApolloRepoClient(
     private val apolloClient: ApolloClient
 ) : FetchService {
-    override suspend fun getAllRepos(): List<Repository> {
+    override suspend fun getAllRepos(searchRepoName:String): List<Repository> {
 
       return  apolloClient
-            .query(SearchQuery())
+            .query(GetRepositoryQuery(searchRepoName))
             .execute()
             .data
-            ?.viewer
-            ?.repositories
-            ?.nodes
+            ?.search
+            ?.edges
             ?.map { node -> toRepository(node)  }
             ?: emptyList<Repository>()
 
@@ -41,7 +41,25 @@ class ApolloRepoClient(
 //        )
 
     }
-    fun toRepository(node:SearchQuery.Node?):Repository{
-        return Repository(node?.name)
+    fun toRepository(edge:GetRepositoryQuery.Edge?):Repository{
+        val repoDetail =  edge?.node?.onRepository
+        return Repository(
+            name = repoDetail?.name,
+            owner = repoDetail?.owner?.login?.let { Owner(login = it) },
+            description = repoDetail?.description,
+            stargazerCount = repoDetail?.stargazerCount,
+            primaryLanguage = repoDetail?.primaryLanguage?.let { Language(name = it.name) },
+            pushedAt = repoDetail?.pushedAt.toString(),
+            createdAt = repoDetail?.createdAt.toString(),
+            updatedAt = repoDetail?.updatedAt.toString(),
+            forkCount = repoDetail?.forkCount,
+            isFork = false,
+            watchers = repoDetail?.watchers?.totalCount?.let { Watchers(totalCount = it) },
+            issues = repoDetail?.issues?.totalCount?.let { Issues(totalCount = it) },
+            pullRequests = repoDetail?.pullRequests?.totalCount?.let { PullRequests(totalCount = it) },
+            licenseInfo = repoDetail?.licenseInfo?.let { LicenseInfo(name = it.name, spdxId = it.spdxId) },
+            collaborators =null,
+            languages = null
+        )
     }
 }

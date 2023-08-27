@@ -31,7 +31,7 @@ data class Issues(val totalCount: Int)
 
 data class PullRequests(val totalCount: Int)
 
-data class LicenseInfo(val name: String, val spdxId: String)
+data class LicenseInfo(val name: String, val spdxId: String?)
 
 data class Collaborators(val totalCount: Int?) // Collaborators can be null
 

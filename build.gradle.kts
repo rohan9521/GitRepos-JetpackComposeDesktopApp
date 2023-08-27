@@ -20,9 +20,7 @@ apollo {
         packageName.set("src.main")
     }
 }
-//tasks.named<com.apollographql.apollo3.gradle.internal.ApolloDownloadSchemaTask>("downloadApolloSchema") {
-//    schema.set(file("path/to/schema.json"))
-//}
+
 dependencies {
     // Note, if you develop a library, you should use compose.desktop.common.
     // compose.desktop.currentOs should be used in launcher-sourceSet
@@ -36,7 +34,6 @@ dependencies {
     // Koin for dependency injection
     implementation("io.insert-koin:koin-core:2.0.1")
 //    implementation("io.insert-koin:koin-extensions:2.0.1")
-
 
 
 }

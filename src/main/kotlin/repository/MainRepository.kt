@@ -12,8 +12,8 @@ class MainRepository(
     private var _repoFlow = MutableStateFlow(listOf<Repository>())
     val repoFlow : StateFlow<List<Repository>> = _repoFlow.asStateFlow()
 
-    suspend fun getAllRepos() {
-        val repoList = fetchService.getAllRepos()
+    suspend fun getAllRepos(searchRepoName:String) {
+        val repoList = fetchService.getAllRepos(searchRepoName)
         _repoFlow.value = repoList
     }
 

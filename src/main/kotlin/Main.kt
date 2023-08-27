@@ -1,12 +1,11 @@
-
 import GraphQL.ApolloRepoClient
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.api.label
 import com.apollographql.apollo3.network.okHttpClient
 import model.*
 import okhttp3.OkHttpClient
@@ -39,7 +39,6 @@ import view.githubrepo.DisplayRepositories
 import viewmodel.MainViewModel
 
 
-
 class MyApp : KoinComponent {
     private val mainViewModel: MainViewModel by inject()
 
@@ -48,32 +47,47 @@ class MyApp : KoinComponent {
     @Preview
     fun App(mainViewModel: MainViewModel = this.mainViewModel) {
 
-            var userInput by remember { mutableStateOf("") }
-            MaterialTheme {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top,
-                    modifier = Modifier
-                        .padding(10.dp)
-                       ,
-                ) {
+        var userInput by remember { mutableStateOf("") }
+        MaterialTheme {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier
+                    .padding(10.dp),
+            ) {
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
                     OutlinedTextField(
                         value = userInput,
+
+                        shape = RoundedCornerShape(16.dp),
                         onValueChange = {
                             userInput = it
+                        },
+                        label={
+                            Text("Repository Name")
                         }
+                    )
+                    Spacer(
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .height(25.dp )
                     )
                     Button(
                         onClick = {
-                            mainViewModel.getAllRepos()
+                            mainViewModel.getAllRepos(userInput)
                         }
-                    ){
+                    ) {
                         Text("Fetch")
                     }
-                    DisplayRepositories(mainViewModel.repoFlow)
 
                 }
+                DisplayRepositories(mainViewModel.repoFlow)
+
             }
+        }
 
 
         // UI code to display the list of users using Jetpack Compose
@@ -90,22 +104,25 @@ fun main() = application {
                 .serverUrl("https://api.github.com/graphql")
                 .okHttpClient(
                     OkHttpClient.Builder()
-                    .addInterceptor { chain ->
-                        val original = chain.request()
-                        val request = original.newBuilder()
-                            .header("Authorization", "Bearer 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")
-                            .method(original.method, original.body)
-                            .build()
-                        chain.proceed(request)
-                    }
-                    .build())
+                        .addInterceptor { chain ->
+                            val original = chain.request()
+                            val request = original.newBuilder()
+                                .header(
+                                    "Authorization",
+                                    "Bearer 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"
+                                )
+                                .method(original.method, original.body)
+                                .build()
+                            chain.proceed(request)
+                        }
+                        .build())
                 .build()
         }
         single { MainViewModel(get()) }
 
         single { ApolloRepoClient(get()) } bind FetchService::class
 
-        single {MainRepository (get())}
+        single { MainRepository(get()) }
     }
 
     startKoin {
