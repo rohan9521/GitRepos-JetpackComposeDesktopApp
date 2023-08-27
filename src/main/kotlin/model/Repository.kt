@@ -1,22 +1,24 @@
 package model
 
+import src.main.SearchQuery
+
 data class Repository(
-    val name: String,
-    val owner: Owner,
-    val description: String,
-    val stargazerCount: Int,
-    val primaryLanguage: Language?,
-    val pushedAt: String,
-    val createdAt: String,
-    val updatedAt: String,
-    val forkCount: Int,
-    val isFork: Boolean,
-    val watchers: Watchers,
-    val issues: Issues,
-    val pullRequests: PullRequests,
-    val licenseInfo: LicenseInfo,
-    val collaborators: Collaborators?,
-    val languages: Languages
+    val name: String? = "",
+    val owner: Owner?=null,
+    val description: String?=null,
+    val stargazerCount: Int?=null,
+    val primaryLanguage: Language?=null,
+    val pushedAt: String?="",
+    val createdAt: String?=null,
+    val updatedAt: String?=null,
+    val forkCount: Int?=null,
+    val isFork: Boolean?=null,
+    val watchers: Watchers?=null,
+    val issues: Issues?=null,
+    val pullRequests: PullRequests?=null,
+    val licenseInfo: LicenseInfo?=null,
+    val collaborators: Collaborators?=null,
+    val languages: Languages?=null
 )
 
 data class Owner(val login: String)

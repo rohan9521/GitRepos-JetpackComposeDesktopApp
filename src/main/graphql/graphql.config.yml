@@ -1,0 +1,6 @@
+
+
+schema:
+  -  https://api.github.com/graphql:
+      headers:
+        Authorization: Bearer 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

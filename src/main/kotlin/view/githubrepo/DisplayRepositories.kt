@@ -4,18 +4,28 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import kotlinx.coroutines.flow.StateFlow
+import model.Repository
+import view.githubrepo.repoview.RepoView
 
 @Composable
-fun DisplayRepositories(repoList:List<String>){
-    val repoListMutableState = remember{ mutableStateOf(repoList) }
+fun DisplayRepositories(repoFlow:StateFlow<List<Repository>>){
+
+    val repoListMutableState = remember{ mutableStateOf(listOf<Repository>()) }
+
+    LaunchedEffect(true){
+        repoFlow.collect{
+            repoListMutableState.value = it
+        }
+    }
+
     LazyColumn(
     ) {
         items(repoListMutableState.value.size){repo->
-           Row{
-                Text(repoListMutableState.value[repo])
-           }
+          RepoView(repoListMutableState.value[repo])
         }
     }
 

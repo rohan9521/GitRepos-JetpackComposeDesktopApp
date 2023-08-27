@@ -1,0 +1,20 @@
+query search {
+    viewer {
+        repositories(first: 100, orderBy: {field:NAME, direction:ASC}) {
+            pageInfo {hasNextPage, endCursor}
+            nodes {
+                description
+                name
+                url
+                isPrivate
+                owner {
+                    login
+                }
+                defaultBranchRef {
+                    name
+                }
+            }
+        }
+    }
+}
+
