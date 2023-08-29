@@ -38,16 +38,20 @@ fun RepoView(repository:Repository){
                 .fillMaxWidth(1.0f)
         ) {
 
-            Column {
-                repository.name?.let { CustomTextView("Name :", it   )}
-                repository.description?.let { CustomTextView("Description : ", it) }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(0.8f)
+            ) {
+                repository.name?.let { CustomTextView("Name :", it   , backgroundColor = Color.Blue,textColor = Color.White)}
+                repository.description?.let { CustomTextView("Description : ", it,backgroundColor = Color.Blue,textColor = Color.White)}
+                repository.primaryLanguage?.let { CustomTextView("Primary Language : ", it.name,backgroundColor = Color.Blue,textColor = Color.White)}
             }
             Surface(
                 modifier = Modifier
                     .padding(10.dp)
                     .background(Color.Green)
             ) {
-                CustomTextView("Stars: ", repository.stargazerCount.toString())
+                CustomTextView("Stars: ", repository.stargazerCount.toString(),Color.Blue,Color.White)
             }
         }
         Divider(
@@ -61,14 +65,11 @@ fun RepoView(repository:Repository){
         )
         Row {
             CustomTextView("Fork : ",repository.forkCount.toString())
-            CustomTextView("IsFork : ",repository.isFork.toString())
             CustomTextView("Issues  : ", repository.issues?.totalCount.toString())
             CustomTextView("Pull Requests  : ", repository.pullRequests?.totalCount.toString())
             CustomTextView("Watchers : ", repository.watchers?.totalCount.toString())
         }
 
     }
-    Spacer(
-        modifier = Modifier.height(10.dp)
-    )
+
 }

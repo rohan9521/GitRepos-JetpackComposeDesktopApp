@@ -1,4 +1,5 @@
 import GraphQL.ApolloRepoClient
+import Utils.TOKEN
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
@@ -88,9 +89,6 @@ class MyApp : KoinComponent {
 
             }
         }
-
-
-        // UI code to display the list of users using Jetpack Compose
     }
 }
 
@@ -109,7 +107,7 @@ fun main() = application {
                             val request = original.newBuilder()
                                 .header(
                                     "Authorization",
-                                    "Bearer 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"
+                                    "Bearer $TOKEN"
                                 )
                                 .method(original.method, original.body)
                                 .build()
