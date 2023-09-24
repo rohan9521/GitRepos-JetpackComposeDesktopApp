@@ -17,6 +17,7 @@ import androidx.compose.ui.window.application
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.label
 import com.apollographql.apollo3.network.okHttpClient
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import model.*
 import okhttp3.OkHttpClient
@@ -31,6 +32,7 @@ import org.koin.dsl.module
 import repository.FetchService
 import repository.MainRepository
 import view.githubrepo.DisplayRepositories
+import view.githubrepo.splashscreen.SplashScreen
 import viewmodel.MainViewModel
 
 
@@ -43,86 +45,98 @@ class MyApp : KoinComponent {
     fun App(mainViewModel: MainViewModel = this.mainViewModel) {
         var outputState = remember { mutableStateOf<ResponseState<List<Repository>>>(ResponseState.Default()) }
         var userInput by remember { mutableStateOf("") }
+        var showSplashScreen by remember { mutableStateOf(true) }
 
         LaunchedEffect(mainViewModel.repoFlow){
             mainViewModel.repoFlow.collect{
                 outputState.value = it
             }
         }
+        LaunchedEffect(true){
+            delay(10000)
+            showSplashScreen = false
+        }
+
 
         MaterialTheme {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Top,
-                modifier = Modifier
-                    .padding(10.dp)
-                    .background(Color.White)
-                    .fillMaxSize(),
-            ) {
-                Row (
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
+            if (showSplashScreen) {
+                SplashScreen()
+            } else {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top,
                     modifier = Modifier
-                        .fillMaxWidth()
-                ){
-                    OutlinedTextField(
-                        value = userInput,
-
-                        shape = RoundedCornerShape(16.dp),
-                        onValueChange = {
-                            userInput = it
-                        },
-                        label={
-                            Text("Repository Name")
-                        }
-                    )
-                    Spacer(
+                        .padding(10.dp)
+                        .background(Color.White)
+                        .fillMaxSize(),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
-                            .padding(horizontal = 10.dp)
-                            .height(25.dp )
-                    )
-                    Button(
-                        onClick = {
-                            mainViewModel.getAllRepos(userInput)
-                        }
+                            .fillMaxWidth()
                     ) {
-                        Text("Fetch")
+                        OutlinedTextField(
+                            value = userInput,
+
+                            shape = RoundedCornerShape(16.dp),
+                            onValueChange = {
+                                userInput = it
+                            },
+                            label = {
+                                Text("Repository Name")
+                            }
+                        )
+                        Spacer(
+                            modifier = Modifier
+                                .padding(horizontal = 10.dp)
+                                .height(25.dp)
+                        )
+                        Button(
+                            onClick = {
+                                mainViewModel.getAllRepos(userInput)
+                            }
+                        ) {
+                            Text("Fetch")
+                        }
+
+                    }
+
+                    outputState.value.let {
+                        when (it) {
+                            is ResponseState.Success -> DisplayRepositories(it.successData)
+                            is ResponseState.Error -> {
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                ) {
+                                    Text(
+                                        text = "${it.errorData?.localizedMessage}",
+                                        color = Color.Red
+                                    )
+                                }
+                            }
+
+                            is ResponseState.Loading -> {
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                ) {
+                                    CircularProgressIndicator()
+                                }
+                            }
+
+                            else -> {
+
+                            }
+                        }
                     }
 
                 }
-
-                outputState.value.let {
-                    when(it ) {
-                        is ResponseState.Success -> DisplayRepositories(it.successData)
-                        is ResponseState.Error -> {
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                            ) {
-                                Text(
-                                    text="${it.errorData?.localizedMessage}",
-                                    color = Color.Red
-                                )
-                            }
-                        }
-                        is ResponseState.Loading -> {
-                            Row(
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                            ) {
-                                CircularProgressIndicator()
-                            }
-                        }
-                        else -> {
-
-                        }
-                    }
-                }
-
             }
         }
     }
