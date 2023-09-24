@@ -5,6 +5,8 @@
 
 ## Used Apollo client for fetching git repos information.
 
+## Splash Screen
+![splashcreengithubrepo](https://github.com/rohan9521/GitRepos-JetpackComposeDesktopApp/assets/43091846/0d544c50-96b7-401d-9387-013b9cc4cf5a)
 
 ## Loading Screen
 ![gitreposloading](https://github.com/rohan9521/GitRepos-JetpackComposeDesktopApp/assets/43091846/5a8b747d-9c3f-41f1-ab0c-9e240d41d502)
