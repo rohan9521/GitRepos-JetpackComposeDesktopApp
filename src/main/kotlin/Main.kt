@@ -1,21 +1,13 @@
 import GraphQL.ApolloRepoClient
+import Utils.TITLE
 import Utils.TOKEN
+import Utils.networkutils.ResponseState
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,8 +17,10 @@ import androidx.compose.ui.window.application
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.label
 import com.apollographql.apollo3.network.okHttpClient
+import kotlinx.coroutines.flow.StateFlow
 import model.*
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import org.koin.core.Koin
 import org.koin.core.KoinComponent
 import org.koin.core.context.GlobalContext.get
@@ -47,18 +41,29 @@ class MyApp : KoinComponent {
     @Composable
     @Preview
     fun App(mainViewModel: MainViewModel = this.mainViewModel) {
-
+        var outputState = remember { mutableStateOf<ResponseState<List<Repository>>>(ResponseState.Default()) }
         var userInput by remember { mutableStateOf("") }
+
+        LaunchedEffect(mainViewModel.repoFlow){
+            mainViewModel.repoFlow.collect{
+                outputState.value = it
+            }
+        }
+
         MaterialTheme {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top,
                 modifier = Modifier
-                    .padding(10.dp),
+                    .padding(10.dp)
+                    .background(Color.White)
+                    .fillMaxSize(),
             ) {
                 Row (
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ){
                     OutlinedTextField(
                         value = userInput,
@@ -85,7 +90,38 @@ class MyApp : KoinComponent {
                     }
 
                 }
-                DisplayRepositories(mainViewModel.repoFlow)
+
+                outputState.value.let {
+                    when(it ) {
+                        is ResponseState.Success -> DisplayRepositories(it.successData)
+                        is ResponseState.Error -> {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(Color.Red)
+                            ) {
+                                Text(
+                                    text="${it.errorData}",
+                                )
+                            }
+                        }
+                        is ResponseState.Loading -> {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+                        else -> {
+
+                        }
+                    }
+                }
 
             }
         }
@@ -126,7 +162,10 @@ fun main() = application {
     startKoin {
         modules(mainModule)
     }
-    Window(onCloseRequest = ::exitApplication) {
+    Window(
+        title = TITLE,
+        onCloseRequest = ::exitApplication
+    ) {
         MyApp().App()
     }
 }

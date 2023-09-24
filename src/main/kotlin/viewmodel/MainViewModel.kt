@@ -1,5 +1,6 @@
 package viewmodel
 
+import Utils.networkutils.ResponseState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,14 +17,15 @@ class MainViewModel (
     private val job = Job()
     private val scope = CoroutineScope(job+Dispatchers.IO)
 
-    val repoFlow : StateFlow<List<Repository>> = repository.repoFlow
+    val repoFlow : StateFlow<ResponseState<List<Repository>>> = repository.repoFlow
 
     fun getAllRepos(searchRepoName:String){
         scope.launch {
             repository.getAllRepos(searchRepoName)
         }
     }
-
-
+    fun onViewModelClear(){
+        job.cancel()
+    }
 
 }

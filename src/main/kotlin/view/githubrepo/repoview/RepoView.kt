@@ -42,9 +42,9 @@ fun RepoView(repository:Repository){
                 modifier = Modifier
                     .fillMaxWidth(0.8f)
             ) {
-                repository.name?.let { CustomTextView("Name :", it   , backgroundColor = Color.Blue,textColor = Color.White)}
-                repository.description?.let { CustomTextView("Description : ", it,backgroundColor = Color.Blue,textColor = Color.White)}
-                repository.primaryLanguage?.let { CustomTextView("Primary Language : ", it.name,backgroundColor = Color.Blue,textColor = Color.White)}
+                repository.name?.let { CustomTextView("Name :", it   , backgroundColor = Color.White,textColor = Color.Black)}
+                repository.description?.let { CustomTextView("Description : ", it,backgroundColor = Color.White,textColor = Color.Black)}
+                repository.primaryLanguage?.let { CustomTextView("Primary Language : ", it.name,backgroundColor = Color.White,textColor = Color.Black)}
             }
             Surface(
                 modifier = Modifier

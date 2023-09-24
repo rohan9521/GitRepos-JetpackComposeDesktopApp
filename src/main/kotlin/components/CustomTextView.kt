@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 fun CustomTextView(
     fieldName: String,
     value: String,
-    backgroundColor:Color = Color.LightGray,
-    textColor:Color = Color.Black) {
+    backgroundColor:Color = Color.Black,
+    textColor:Color = Color.White) {
 
     Surface(
         color = backgroundColor,
