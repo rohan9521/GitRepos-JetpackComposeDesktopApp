@@ -3,4 +3,4 @@
 schema:
   -  https://api.github.com/graphql:
       headers:
-        Authorization: Bearer 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
+        Authorization: Bearer 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

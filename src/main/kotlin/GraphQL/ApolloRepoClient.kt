@@ -1,6 +1,8 @@
 package GraphQL
 
+import Utils.networkutils.ResponseState
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.exception.ApolloException
 import model.*
 import repository.FetchService
 import src.main.GetRepositoryQuery
@@ -10,16 +12,21 @@ import java.util.stream.Collector
 class ApolloRepoClient(
     private val apolloClient: ApolloClient
 ) : FetchService {
-    override suspend fun getAllRepos(searchRepoName:String): List<Repository> {
+    override suspend fun getAllRepos(searchRepoName:String): ResponseState<List<Repository>> {
 
-      return  apolloClient
-            .query(GetRepositoryQuery(searchRepoName))
-            .execute()
-            .data
-            ?.search
-            ?.edges
-            ?.map { node -> toRepository(node)  }
-            ?: emptyList<Repository>()
+      return try{
+
+        val resultList =  apolloClient
+              .query(GetRepositoryQuery(searchRepoName))
+              .execute()
+              .data
+              ?.search
+              ?.edges
+              ?.map { node -> toRepository(node)  }
+          ResponseState.Success(successData = resultList)
+      }catch (exception : ApolloException){
+          ResponseState.Error(errorData = exception)
+      }
 
 //        return listOf( Repository(
 //            name = "schema_plus",

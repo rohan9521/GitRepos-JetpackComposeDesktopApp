@@ -13,10 +13,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CustomTextView(fieldName: String, value: String) {
+fun CustomTextView(
+    fieldName: String,
+    value: String,
+    backgroundColor:Color = Color.Black,
+    textColor:Color = Color.White) {
 
     Surface(
-        color = Color.LightGray,
+        color = backgroundColor,
         shape = RoundedCornerShape(20.dp),
         modifier = Modifier
             .padding(
@@ -30,8 +34,11 @@ fun CustomTextView(fieldName: String, value: String) {
                 .border(BorderStroke(2.dp, Color.Black), shape = RoundedCornerShape(20.dp))
                 .padding(10.dp)
         ) {
-            Text(fieldName,modifier = Modifier.wrapContentWidth(align = Alignment.Start))
-            Text(value)
+            Text(
+                fieldName,modifier = Modifier.wrapContentWidth(align = Alignment.Start),
+                color = textColor
+            )
+            Text(value,color = textColor)
 
         }
 
