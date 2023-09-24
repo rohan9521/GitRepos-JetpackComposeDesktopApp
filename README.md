@@ -1,10 +1,11 @@
 # GitRepos-JetpackComposeDesktopApp
 * In order to test the application Generate a github personal access token.
  Follow the link to create personal access token https://docs.github.com/en/enterprise-server@3.6/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
-* Place the token Main.kt line no 112 after 'Bearer '
+
+* Place the token in Utils/constants.kt
 
 
-* Used Apollo client for fetching git repos information.
+* Used Apollo client for fetching git repos information from graphql api.
 
 [screen-capture (4).webm](https://github.com/rohan9521/GitRepos-JetpackComposeDesktopApp/assets/43091846/2f85f476-d5a6-43ee-b958-a94d538ba6ac)
 
