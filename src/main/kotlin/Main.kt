@@ -100,10 +100,10 @@ class MyApp : KoinComponent {
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .background(Color.Red)
                             ) {
                                 Text(
-                                    text="${it.errorData}",
+                                    text="${it.errorData?.localizedMessage}",
+                                    color = Color.Red
                                 )
                             }
                         }
